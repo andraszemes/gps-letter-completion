@@ -2,7 +2,6 @@
 #include <string>
 #include <algorithm>
 
-
 // Class of const return messages
 class Message
 {
@@ -13,12 +12,10 @@ public:
     static constexpr const char* ENABLE = "Enable: ";
 };
 
-
 int main(int argc, char *argv[])
 {
     // Load search string
     const std::string search = argv[1] ? argv[1] : std::string();
-    const int len = search.size();
 
     // Initialize variables
     std::string place, res, msg;
