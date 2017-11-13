@@ -2,10 +2,23 @@
 #include <string>
 #include <algorithm>
 
+
+// Class of const return messages
+class Message
+{
+public:
+    static constexpr const char* MATCH_FOUND = "Match found";
+    static constexpr const char* NOT_FOUND = "Not found";
+    static constexpr const char* FOUND = "Found: ";
+    static constexpr const char* ENABLE = "Enable: ";
+};
+
+
 int main(int argc, char *argv[])
 {
     // Load search string
     const std::string search = argv[1] ? argv[1] : std::string();
+    const int len = search.size();
 
     // Initialize variables
     std::string place, res, msg;
@@ -13,8 +26,12 @@ int main(int argc, char *argv[])
     // Parse through stdin places
     while(std::getline(std::cin, place)) 
     {
-        // If match found, append following character to result string
-        if(!place.rfind(search, 0))
+        // If exact match found
+        if(!place.compare(search))
+            msg = Message::MATCH_FOUND;
+
+        // If partial match found, append following character to result string
+        else if(!place.rfind(search, 0))
             res += place[search.size()];
     }
 
@@ -25,23 +42,29 @@ int main(int argc, char *argv[])
     transform(res.begin(), res.end(), res.begin(), ::toupper);
 
     // Determine feedback message
-    switch(res.size())
+    if(msg.empty())
     {
-        case 0:
-            msg = "Not found";
-            break;
- 
-        case 1:
-            msg = "Found: ";
-            break;
-
-        default:
-            msg = "Enable: ";
+        switch(res.size())
+        {
+            case 0:
+                msg = Message::NOT_FOUND;
+                break;
+    
+            case 1:
+                msg = Message::FOUND;
+                break;
+    
+            default:
+                msg = Message::ENABLE;
+        }
     }
 
     // Remove duplicate characters from result
     res.erase(std::unique(res.begin(), res.end()), res.end());
 
-    // Print result
-    std::cout << msg << res;
+    // Print result and search term
+    std::cout << msg << res << std::endl;
+    std::cout << "Search term: " << search;
+
+    return 0;
 }
